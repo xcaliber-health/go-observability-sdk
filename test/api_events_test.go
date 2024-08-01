@@ -11,10 +11,11 @@ package openapi
 
 import (
 	"context"
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
-	openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+	openapiclient "github.com/xcaliber-health/go-observability-sdk"
 )
 
 func Test_openapi_EventsAPIService(t *testing.T) {
@@ -24,7 +25,7 @@ func Test_openapi_EventsAPIService(t *testing.T) {
 
 	t.Run("Test EventsAPIService EventsPost", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		resp, httpRes, err := apiClient.EventsAPI.EventsPost(context.Background()).Execute()
 

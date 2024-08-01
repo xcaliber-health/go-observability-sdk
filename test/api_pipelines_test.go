@@ -11,10 +11,11 @@ package openapi
 
 import (
 	"context"
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
-	openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
+	openapiclient "github.com/xcaliber-health/go-observability-sdk"
 )
 
 func Test_openapi_PipelinesAPIService(t *testing.T) {
@@ -24,7 +25,7 @@ func Test_openapi_PipelinesAPIService(t *testing.T) {
 
 	t.Run("Test PipelinesAPIService PipelinesFailedGet", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		resp, httpRes, err := apiClient.PipelinesAPI.PipelinesFailedGet(context.Background()).Execute()
 
@@ -36,7 +37,7 @@ func Test_openapi_PipelinesAPIService(t *testing.T) {
 
 	t.Run("Test PipelinesAPIService PipelinesPipelineIdDurationGet", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var pipelineId string
 
@@ -50,7 +51,7 @@ func Test_openapi_PipelinesAPIService(t *testing.T) {
 
 	t.Run("Test PipelinesAPIService PipelinesPipelineIdEventsGet", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var pipelineId string
 
@@ -64,7 +65,7 @@ func Test_openapi_PipelinesAPIService(t *testing.T) {
 
 	t.Run("Test PipelinesAPIService PipelinesPipelineIdStatusGet", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var pipelineId string
 
@@ -78,7 +79,7 @@ func Test_openapi_PipelinesAPIService(t *testing.T) {
 
 	t.Run("Test PipelinesAPIService PipelinesPost", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		httpRes, err := apiClient.PipelinesAPI.PipelinesPost(context.Background()).Execute()
 
@@ -89,7 +90,7 @@ func Test_openapi_PipelinesAPIService(t *testing.T) {
 
 	t.Run("Test PipelinesAPIService PipelinesSucceededGet", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		resp, httpRes, err := apiClient.PipelinesAPI.PipelinesSucceededGet(context.Background()).Execute()
 
@@ -101,7 +102,7 @@ func Test_openapi_PipelinesAPIService(t *testing.T) {
 
 	t.Run("Test PipelinesAPIService PipelinesTotalGet", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		resp, httpRes, err := apiClient.PipelinesAPI.PipelinesTotalGet(context.Background()).Execute()
 
@@ -113,7 +114,7 @@ func Test_openapi_PipelinesAPIService(t *testing.T) {
 
 	t.Run("Test PipelinesAPIService PipelinesTypeAverageDurationGet", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var type_ string
 
@@ -127,7 +128,7 @@ func Test_openapi_PipelinesAPIService(t *testing.T) {
 
 	t.Run("Test PipelinesAPIService PipelinesTypeMaxDurationGet", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var type_ string
 
