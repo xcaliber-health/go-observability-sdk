@@ -1,0 +1,577 @@
+openapi: 3.0.1
+info:
+  contact: {}
+  description: Observability Service to register pipelines and store observability
+    events.
+  title: Observability Service API
+  version: "1.0"
+servers:
+- url: //localhost:4444/
+paths:
+  /events:
+    post:
+      description: Creates a new event for a specific pipeline with the given details.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/main.CreateEventRequest'
+        description: Event to be created
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+          description: "{\"message\": \"Event created successfully\", \"event_id\"\
+            : \"uuid\"}"
+        "400":
+          content:
+            application/json:
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+          description: "{\"error\": \"Invalid request payload\"}"
+        "500":
+          content:
+            application/json:
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+          description: "{\"error\": \"Internal server error\"}"
+      summary: Create a new event
+      tags:
+      - events
+      x-codegen-request-body-name: event
+  /health:
+    get:
+      description: Endpoint to determine the health of the service
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+          description: "{\"Status\": \"OK\"}"
+        "500":
+          content:
+            application/json:
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+          description: "{\"error\": \"Internal server error\"}"
+      summary: Service Health endpoint
+      tags:
+      - health
+  /microbatches/events:
+    get:
+      description: Retrieves all microbatch events that occurred within the given
+        duration.
+      parameters:
+      - description: Start Time
+        in: query
+        name: start_time
+        required: true
+        schema:
+          type: string
+      - description: End Time
+        in: query
+        name: end_time
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                additionalProperties: true
+                type: object
+          description: "{\"events\": [{\"event_id\": \"uuid\", \"event_type\": \"\
+            event_type\", \"timestamp\": \"timestamp\", \"details\": {\"key\": \"\
+            value\"}}, ...]}"
+        "400":
+          content:
+            '*/*':
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+          description: "{\"error\": \"Invalid parameters\"}"
+      summary: Get all microbatch events within a duration
+      tags:
+      - microbatches
+  /microbatches/{microbatch_id}/duration:
+    get:
+      description: Retrieves the total duration of the specified microbatch.
+      parameters:
+      - description: Microbatch ID
+        in: path
+        name: microbatch_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                additionalProperties: true
+                type: object
+          description: "{\"microbatch_id\": \"uuid\", \"start_time\": \"timestamp\"\
+            , \"end_time\": \"timestamp\", \"duration\": \"duration_in_seconds\"}"
+        "400":
+          content:
+            '*/*':
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+          description: "{\"error\": \"Invalid microbatch ID\"}"
+      summary: Get the total duration of a specific microbatch
+      tags:
+      - microbatches
+  /microbatches/{microbatch_id}/status:
+    get:
+      description: Retrieves the current status of the specified microbatch.
+      parameters:
+      - description: Microbatch ID
+        in: path
+        name: microbatch_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                additionalProperties: true
+                type: object
+          description: "{\"microbatch_id\": \"uuid\", \"status\": \"running/completed/failed\"\
+            , \"last_updated\": \"timestamp\"}"
+        "400":
+          content:
+            '*/*':
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+          description: "{\"error\": \"Invalid microbatch ID\"}"
+      summary: Get the current status of a specific microbatch
+      tags:
+      - microbatches
+  /pipelines:
+    post:
+      description: Register a new pipeline with the given details
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/main.RegisterPipelineRequest'
+        description: Pipeline data
+        required: true
+      responses:
+        "201":
+          content: {}
+          description: Pipeline successfully registered
+        "400":
+          content: {}
+          description: Bad request
+        "422":
+          content: {}
+          description: Validation failed
+      summary: Register a new pipeline
+      tags:
+      - pipelines
+      x-codegen-request-body-name: pipeline
+  /pipelines/failed:
+    get:
+      description: Retrieves the number of pipelines that have failed.
+      parameters:
+      - description: Start Time
+        in: query
+        name: start_time
+        schema:
+          type: string
+      - description: End Time
+        in: query
+        name: end_time
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                additionalProperties:
+                  type: integer
+                type: object
+          description: "{\"failed_pipelines\": 50}"
+        "500":
+          content:
+            '*/*':
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+          description: "{\"error\": \"Internal server error\"}"
+      summary: Get the number of pipelines that have failed
+      tags:
+      - pipelines
+  /pipelines/succeeded:
+    get:
+      description: Retrieves the number of pipelines that have succeeded.
+      parameters:
+      - description: Start Time
+        in: query
+        name: start_time
+        schema:
+          type: string
+      - description: End Time
+        in: query
+        name: end_time
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                additionalProperties:
+                  type: integer
+                type: object
+          description: "{\"succeeded_pipelines\": 950}"
+        "500":
+          content:
+            '*/*':
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+          description: "{\"error\": \"Internal server error\"}"
+      summary: Get the number of pipelines that have succeeded
+      tags:
+      - pipelines
+  /pipelines/total:
+    get:
+      description: Retrieves the total number of pipelines.
+      parameters:
+      - description: Start Time
+        in: query
+        name: start_time
+        schema:
+          type: string
+      - description: End Time
+        in: query
+        name: end_time
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                additionalProperties:
+                  type: integer
+                type: object
+          description: "{\"total_pipelines\": 1000}"
+        "500":
+          content:
+            '*/*':
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+          description: "{\"error\": \"Internal server error\"}"
+      summary: Get the total number of pipelines
+      tags:
+      - pipelines
+  /pipelines/{pipeline_id}/duration:
+    get:
+      description: Retrieves the total duration of the specified pipeline.
+      parameters:
+      - description: Pipeline ID
+        in: path
+        name: pipeline_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                additionalProperties: true
+                type: object
+          description: "{\"pipeline_id\": \"int\", \"start_time\": \"timestamp\",\
+            \ \"end_time\": \"timestamp\", \"duration\": \"duration_in_seconds\"}"
+        "400":
+          content:
+            '*/*':
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+          description: "{\"error\": \"Invalid pipeline ID\"}"
+      summary: Get the total duration of a specific pipeline
+      tags:
+      - pipelines
+  /pipelines/{pipeline_id}/events:
+    get:
+      description: Retrieves all events of the specified pipeline that occurred within
+        the given duration.
+      parameters:
+      - description: Pipeline ID
+        in: path
+        name: pipeline_id
+        required: true
+        schema:
+          type: string
+      - description: Start Time
+        in: query
+        name: start_time
+        required: true
+        schema:
+          type: string
+      - description: End Time
+        in: query
+        name: end_time
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                additionalProperties: true
+                type: object
+          description: "{\"pipeline_id\": \"uuid\", \"events\": [{\"event_id\": \"\
+            uuid\", \"event_type\": \"event_type\", \"timestamp\": \"timestamp\",\
+            \ \"details\": {\"key\": \"value\"}}, ...]}"
+        "400":
+          content:
+            '*/*':
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+          description: "{\"error\": \"Invalid parameters\"}"
+      summary: Get all events of a specific pipeline within a duration
+      tags:
+      - pipelines
+  /pipelines/{pipeline_id}/status:
+    get:
+      description: Retrieves the current status of the specified pipeline.
+      parameters:
+      - description: Pipeline ID
+        in: path
+        name: pipeline_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                additionalProperties: true
+                type: object
+          description: "{\"pipeline_id\": \"int\", \"status\": \"running/completed/failed\"\
+            , \"last_updated\": \"timestamp\"}"
+        "400":
+          content:
+            '*/*':
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+          description: "{\"error\": \"Invalid pipeline ID\"}"
+      summary: Get the current status of a specific pipeline
+      tags:
+      - pipelines
+  /pipelines/{type}/average_duration:
+    get:
+      description: Retrieves the average duration of pipelines of a specific type.
+      parameters:
+      - description: Pipeline Type
+        in: path
+        name: type
+        required: true
+        schema:
+          type: string
+      - description: Start Time
+        in: query
+        name: start_time
+        schema:
+          type: string
+      - description: End Time
+        in: query
+        name: end_time
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                additionalProperties: true
+                type: object
+          description: "{\"pipeline_type\": \"micro_batch\", \"average_duration\"\
+            : 120.5}"
+        "400":
+          content:
+            '*/*':
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+          description: "{\"error\": \"Invalid pipeline type\"}"
+      summary: Get the average duration of a specific type of pipeline
+      tags:
+      - pipelines
+  /pipelines/{type}/max_duration:
+    get:
+      description: Retrieves the maximum duration of pipelines of a specific type.
+      parameters:
+      - description: Pipeline Type
+        in: path
+        name: type
+        required: true
+        schema:
+          type: string
+      - description: Start Time
+        in: query
+        name: start_time
+        schema:
+          type: string
+      - description: End Time
+        in: query
+        name: end_time
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                additionalProperties: true
+                type: object
+          description: "{\"pipeline_type\": \"micro_batch\", \"max_duration\": 300.0}"
+        "400":
+          content:
+            '*/*':
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+          description: "{\"error\": \"Invalid pipeline type\"}"
+      summary: Get the maximum duration of a specific type of pipeline
+      tags:
+      - pipelines
+  /workflows/events:
+    get:
+      description: Retrieves all workflow events that occurred within the given duration.
+      parameters:
+      - description: Start Time
+        in: query
+        name: start_time
+        required: true
+        schema:
+          type: string
+      - description: End Time
+        in: query
+        name: end_time
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                additionalProperties: true
+                type: object
+          description: "{\"events\": [{\"event_id\": \"uuid\", \"event_type\": \"\
+            event_type\", \"timestamp\": \"timestamp\", \"details\": {\"key\": \"\
+            value\"}}, ...]}"
+        "400":
+          content:
+            '*/*':
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+          description: "{\"error\": \"Invalid parameters\"}"
+      summary: Get all workflow events within a duration
+      tags:
+      - workflows
+components:
+  schemas:
+    main.CreateEventRequest:
+      properties:
+        dataProductId:
+          type: integer
+        microBatchId:
+          type: string
+        namespaceId:
+          type: integer
+        parentPipelineID:
+          type: integer
+        parentPipelineWorkflowID:
+          type: string
+        pipelineID:
+          type: integer
+        sourceId:
+          type: integer
+        state:
+          type: string
+        tenantId:
+          type: integer
+        timestamp:
+          type: string
+        workflowID:
+          type: string
+      type: object
+    main.RegisterPipelineRequest:
+      properties:
+        namespaceId:
+          type: integer
+        parentPipelineId:
+          type: integer
+        parentPipelineName:
+          type: string
+        pipelineId:
+          type: integer
+        pipelineName:
+          type: string
+        states:
+          example:
+          - '''STARTED'''
+          - ' ''PAUSED'''
+          - ' ''STOPPED'''
+          - ' ''COMPLETED'''
+          - ' ''CANCELLED'''
+          items:
+            type: string
+          type: array
+        type:
+          example: micro_batch
+          type: string
+      required:
+      - namespaceId
+      - pipelineId
+      - pipelineName
+      - states
+      - type
+      type: object
+x-original-swagger-version: "2.0"
