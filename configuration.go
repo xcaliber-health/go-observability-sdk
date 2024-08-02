@@ -90,7 +90,7 @@ func NewConfiguration() *Configuration {
 		Debug:            false,
 		Servers:          ServerConfigurations{
 			{
-				URL: "//localhost:4444",
+				URL: "http://localhost:4444",
 				Description: "No description provided",
 			},
 		},
